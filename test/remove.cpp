@@ -49,10 +49,10 @@ TEST(sbs, remove)
         Box box;
 
         int cnt=0;
-        Subs* subs = new Subs([&](void *, std::uint_fast8_t)
+        Subs* subs = new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt++;
-        });
+        }};
         box.push(subs);
 
         box.activate();
@@ -69,10 +69,10 @@ TEST(sbs, remove)
         Box box;
 
         int cnt=0;
-        Subs* subs = new Subs([&](void *, std::uint_fast8_t)
+        Subs* subs = new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt++;
-        });
+        }};
         box.push(subs);
 
         box.activate();
@@ -93,17 +93,17 @@ TEST(sbs, remove)
         Subs* subs1;
         Subs* subs2;
 
-        subs1 = new Subs([&](void *, std::uint_fast8_t)
+        subs1 = new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt1++;
             box.removeAndDelete(subs2);
-        });
+        }};
         box.push(subs1);
 
-        subs2 = new Subs([&](void *, std::uint_fast8_t)
+        subs2 = new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt2++;
-        });
+        }};
         box.push(subs2);
 
         box.activate();

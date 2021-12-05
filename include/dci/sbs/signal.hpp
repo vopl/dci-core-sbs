@@ -55,7 +55,7 @@ namespace dci::sbs
     template <class F>
     void Signal<R, Args...>::connect(F&& f) requires wire::Callback<R, F, Args...>::_valid
     {
-        Subscription* s = new wire::Callback<R, F, Args...>(nullptr, std::forward<F>(f));
+        Subscription* s = new wire::Callback<R, F, Args...>{nullptr, std::forward<F>(f)};
 
         _box->push(s);
     }
@@ -65,7 +65,7 @@ namespace dci::sbs
     template <class F>
     void Signal<R, Args...>::connect(Owner& owner, F&& f) requires wire::Callback<R, F, Args...>::_valid
     {
-        Subscription* s = new wire::Callback<R, F, Args...>(&owner, std::forward<F>(f));
+        Subscription* s = new wire::Callback<R, F, Args...>{&owner, std::forward<F>(f)};
 
         _box->push(s);
     }

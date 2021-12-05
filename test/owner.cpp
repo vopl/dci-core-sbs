@@ -50,10 +50,10 @@ TEST(sbs, owner)
 
         Owner owner;
         int cnt=0;
-        box.push(new Subs(owner, [&](void *, std::uint_fast8_t)
+        box.push(new Subs{owner, [&](void *, std::uint_fast8_t)
         {
             cnt++;
-        }));
+        }});
         box.activate();
         EXPECT_EQ(1, cnt);
 
@@ -70,10 +70,10 @@ TEST(sbs, owner)
 
         Owner * owner = new Owner;
         int cnt=0;
-        box.push(new Subs(*owner, [&](void *, std::uint_fast8_t)
+        box.push(new Subs{*owner, [&](void *, std::uint_fast8_t)
         {
             cnt++;
-        }));
+        }});
         box.activate();
         EXPECT_EQ(1, cnt);
 

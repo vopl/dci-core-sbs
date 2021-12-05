@@ -148,7 +148,7 @@ namespace dci::sbs::wire::transfer
 
         case ValueKind::cptr:
             _valueKind = ValueKind::copy;
-            new (&copy()) T(*_cptr);
+            new (&copy()) T{*_cptr};
             [[fallthrough]];
 
         case ValueKind::copy:

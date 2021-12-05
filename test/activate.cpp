@@ -49,10 +49,10 @@ TEST(sbs, activate)
         Box box;
 
         int cnt=0;
-        box.push(new Subs([&](void *, std::uint_fast8_t)
+        box.push(new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt++;
-        }));
+        }});
         box.activate();
         EXPECT_EQ(1, cnt);
         box.activate();
@@ -66,18 +66,18 @@ TEST(sbs, activate)
         int cnt1=0;
         int cnt2=0;
         int cnt3=0;
-        box.push(new Subs([&](void *, std::uint_fast8_t)
+        box.push(new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt1++;
-        }));
-        box.push(new Subs([&](void *, std::uint_fast8_t)
+        }});
+        box.push(new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt2++;
-        }));
-        box.push(new Subs([&](void *, std::uint_fast8_t)
+        }});
+        box.push(new Subs{[&](void *, std::uint_fast8_t)
         {
             cnt3++;
-        }));
+        }});
         box.activate();
         EXPECT_EQ(1, cnt1);
         EXPECT_EQ(1, cnt2);
@@ -93,11 +93,11 @@ TEST(sbs, activate)
         Box box;
 
         int cnt=0;
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_TRUE(flags & Subscription::act4Last);
             cnt++;
-        }));
+        }});
         box.activate();
         EXPECT_EQ(1, cnt);
     }
@@ -109,21 +109,21 @@ TEST(sbs, activate)
         int cnt1=0;
         int cnt2=0;
         int cnt3=0;
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_TRUE(flags & Subscription::act4Next);
             cnt1++;
-        }));
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        }});
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_TRUE(flags & Subscription::act4Next);
             cnt2++;
-        }));
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        }});
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_TRUE(flags & Subscription::act4Last);
             cnt3++;
-        }));
+        }});
         box.activate();
         EXPECT_EQ(1, cnt1);
         EXPECT_EQ(1, cnt2);
@@ -139,11 +139,11 @@ TEST(sbs, activate)
         Box box;
 
         int cnt=0;
-        box.push(new Subs([&](void* ctx, std::uint_fast8_t)
+        box.push(new Subs{[&](void* ctx, std::uint_fast8_t)
         {
             EXPECT_EQ(std::intptr_t(42), reinterpret_cast<std::intptr_t>(ctx));
             cnt++;
-        }));
+        }});
         box.activate(reinterpret_cast<void*>(42));
         EXPECT_EQ(1, cnt);
     }
@@ -153,11 +153,11 @@ TEST(sbs, activate)
         Box box;
 
         int cnt=0;
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_FALSE(flags & Subscription::del);
             cnt++;
-        }));
+        }});
         box.activate(nullptr, Box::del);
         EXPECT_EQ(1, cnt);
 
@@ -172,21 +172,21 @@ TEST(sbs, activate)
         int cnt1=0;
         int cnt2=0;
         int cnt3=0;
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_FALSE(flags & Subscription::del);
             cnt1++;
-        }));
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        }});
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_FALSE(flags & Subscription::del);
             cnt2++;
-        }));
-        box.push(new Subs([&](void *, std::uint_fast8_t flags)
+        }});
+        box.push(new Subs{[&](void *, std::uint_fast8_t flags)
         {
             EXPECT_FALSE(flags & Subscription::del);
             cnt3++;
-        }));
+        }});
         box.activate(nullptr, Box::del);
         EXPECT_EQ(1, cnt1);
         EXPECT_EQ(1, cnt2);
@@ -218,7 +218,7 @@ TEST(sbs, activate)
                 }
 
                 {
-                    Subscription* s = new Subs(f);
+                    Subscription* s = new Subs{f};
                     box.push(s);
                     subscriptions.push_back(s);
                 }
@@ -229,7 +229,7 @@ TEST(sbs, activate)
             deep--;
         };
 
-        Subscription* s = new Subs(f);
+        Subscription* s = new Subs{f};
         box.push(s);
         subscriptions.push_back(s);
 
@@ -259,9 +259,9 @@ TEST(sbs, activate)
             deep--;
         };
 
-        box.push(new Subs(f1));
-        box.push(new Subs(f2));
-        box.push(new Subs(f1));
+        box.push(new Subs{f1});
+        box.push(new Subs{f2});
+        box.push(new Subs{f1});
         box.activate();
     }
 }
