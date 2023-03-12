@@ -23,15 +23,10 @@ namespace dci::sbs::wire
 
     private:
         static void activator(sbs::Subscription* bs, void* context, std::uint_fast8_t flags);
-        auto invoke(std::tuple<transfer::Arg<Args>...>& args, bool isLast);
-
-        template <std::size_t... I>
-        auto invoke(std::tuple<transfer::Arg<Args>...>& args, bool isLast, std::index_sequence<I...>);
-
-        auto invoke(const transfer::Arg<Args>&... args);
+        auto invoke(const std::tuple<transfer::Arg<Args>...>& args, bool isLast);
 
     public:
-        constexpr static const bool _valid = std::is_same_v<R, decltype(std::declval<Callback>().invoke(std::declval<transfer::Arg<Args>>()...))>;
+        constexpr static const bool _valid = std::is_same_v<R, decltype(std::declval<Callback>().invoke(std::declval<std::tuple<transfer::Arg<Args>...>>(), true))>;
 
     private:
          template <class... TargetArgs>
@@ -129,34 +124,22 @@ namespace dci::sbs::wire
 
     /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
     template <class R, class F, class... Args>
-    auto Callback<R, F, Args...>::invoke(std::tuple<transfer::Arg<Args>...>& args, bool isLast)
+    auto Callback<R, F, Args...>::invoke(const std::tuple<transfer::Arg<Args>...>& args, bool isLast)
     {
-        return invoke(args, isLast, std::make_index_sequence<sizeof...(Args)>{});
-    }
-
-    /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
-    template <class R, class F, class... Args>
-    template <std::size_t... I>
-    auto Callback<R, F, Args...>::invoke(std::tuple<transfer::Arg<Args>...>& args, bool isLast, std::index_sequence<I...>)
-    {
-        if(isLast)
+        return [&]<std::size_t... I>(std::index_sequence<I...>)
         {
-            return invoke(std::get<I>(args)...);
-        }
+            if(isLast)
+            {
+                return Applyer<>::exec(_f, std::get<I>(args)...);
+            }
 
-        return invoke(
-                    transfer::Arg<
-                        std::remove_reference_t<
-                            decltype(std::get<I>(args).rr())
-                        >
-                    >(std::get<I>(args).cr())...);
-    }
-
-    /////////0/////////1/////////2/////////3/////////4/////////5/////////6/////////7
-    template <class R, class F, class... Args>
-    auto Callback<R, F, Args...>::invoke(const transfer::Arg<Args>&... args)
-    {
-        return Applyer<>::exec(_f, args...);
+            return Applyer<>::exec(_f,
+                        transfer::Arg<
+                            std::remove_reference_t<
+                                decltype(std::get<I>(args).rr())
+                            >
+                        >(std::get<I>(args).cr())...);
+        }(std::make_index_sequence<sizeof...(Args)>{});
     }
 
     namespace callback
