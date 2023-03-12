@@ -36,5 +36,5 @@ file(GLOB_RECURSE TST test/*)
 include(dciTest)
 dciTest(${UNAME} noenv
     SRC ${TST}
-    LINK ${UNAME}
+    LINK ${UNAME} mm utils exception
 )
