@@ -83,7 +83,7 @@ namespace dci::sbs::wire::transfer
         {
             T * const _ptr;
             const T * const _cptr;
-            mutable std::aligned_storage_t<sizeof(T), alignof(T)> _copy;
+            alignas(T) mutable std::byte _copy[sizeof(T)];
         };
     };
 
